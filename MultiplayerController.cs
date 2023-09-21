@@ -61,7 +61,7 @@ public class MultiplayerController : MonoBehaviour
         try
         {
             //client = new TcpClient("game.055190.xyz", 8080); // Connect to the Go server on localhost and port 8080
-            client = new TcpClient("10.126.36.29", 8080); // Connect to the Go server 
+            client = new TcpClient("10.126.167.203", 8080); // Connect to the Go server 
             stream = client.GetStream();
 
             // Send a message to the server
@@ -107,7 +107,7 @@ public class MultiplayerController : MonoBehaviour
                     string response = Encoding.ASCII.GetString(receiveBuffer, 0, bytesRead);
                     Debug.Log("Received: " + response);
                     
-                    if(response.Length>1){
+                    if(response.Length>2){
                         char delimiter = '+';
                         string[] moveDataString = response.Split(delimiter);
                         int player=0;
@@ -130,6 +130,8 @@ public class MultiplayerController : MonoBehaviour
                         Debug.Log(receivedPlayer);
                         Debug.Log(receivedDirection);
                        
+                    }else{
+                        playerNum = System.Convert.ToInt32(response);
                     }
                 }
                 catch (Exception e)
@@ -142,10 +144,15 @@ public class MultiplayerController : MonoBehaviour
         }
     }
 
-    public void Send(string pos){        
-        string message = playerNum + "+" +pos+ "+\n";
-        byte[] data = Encoding.ASCII.GetBytes(message);
-        stream.Write(data, 0, data.Length);
+
+    string oldPosDoNotFlood; //avoid flooding server, because all players are with send script
+    public void Send(string pos){
+        if(oldPosDoNotFlood!=pos){
+            string message = playerNum + "+" +pos+ "+\n";
+            byte[] data = Encoding.ASCII.GetBytes(message);
+            stream.Write(data, 0, data.Length);
+            oldPosDoNotFlood=pos;      
+        }
     }
 
 
