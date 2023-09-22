@@ -210,7 +210,7 @@ public class MultiplayerController : MonoBehaviour
             int horizontalAxis = kvp.Value;
 
             // Apply movement for the player            
-            move(player, horizontalAxis);
+            if(horizontalAxis!=0) move(player, horizontalAxis);
         }
         //playerMovements.Clear();
         //if (receivedDirection!=0) move(receivedPlayer, receivedDirection);        
